@@ -1,0 +1,108 @@
+# 🗃️ Sistema CRUD com SQLite em C#
+
+Projeto Windows Forms para gerenciamento de usuários com operações CRUD (Create, Read, Update, Delete) usando SQLite como banco de dados.
+
+## 🛠️ Tecnologias Utilizadas
+- C# (.NET Framework)
+- Windows Forms
+- SQLite
+- Dapper (Opcional)
+
+## 📋 Pré-requisitos
+- Visual Studio 2019/2022
+- .NET Framework 4.7.2+
+- Git (para clonar o repositório)
+
+## 🚀 Configuração Inicial
+
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/seu-usuario/projetoCRUD.git
+   ```
+
+2. **Restaurar pacotes NuGet**:
+   - Abra o projeto no Visual Studio
+   - Menu `Build` > `Restore NuGet Packages`
+
+3. **Estrutura de pastas**:
+   ```
+   projetoCRUD/
+   ├── Database/          # Pasta do banco de dados
+   │   └── usuarios.db   # Arquivo do banco (criado automaticamente)
+   ├── src/              # Código fonte
+   └── .gitignore        # Configuração de arquivos ignorados
+   ```
+
+## 🔌 Conexão com o Banco de Dados
+O sistema usa SQLite com a classe `DatabaseHelper`:
+
+```csharp
+public static class DatabaseHelper
+{
+    private static string _databasePath = Path.Combine(
+        Application.StartupPath, "..", "..", "Database", "usuarios.db"
+    );
+    
+    public static SQLiteConnection GetConnection() 
+    {
+        return new SQLiteConnection($"Data Source={_databasePath};Version=3;");
+    }
+}
+```
+
+## ⚙️ Operações Implementadas
+
+### Create (Inserir)
+```csharp
+var cmd = new SQLiteCommand(
+    "INSERT INTO Users (Nome, Senha) VALUES (@Nome, @Senha)", 
+    connection);
+cmd.Parameters.AddWithValue("@Nome", nome);
+cmd.Parameters.AddWithValue("@Senha", senha);
+cmd.ExecuteNonQuery();
+```
+
+### Read (Consultar)
+```csharp
+var adapter = new SQLiteDataAdapter("SELECT * FROM Users", connection);
+var table = new DataTable();
+adapter.Fill(table);
+dataGridView.DataSource = table;
+```
+
+### Update (Atualizar)
+```csharp
+var cmd = new SQLiteCommand(
+    "UPDATE Users SET Nome=@Nome, Senha=@Senha WHERE Id=@Id", 
+    connection);
+cmd.Parameters.AddWithValue("@Id", id);
+cmd.Parameters.AddWithValue("@Nome", novoNome);
+cmd.Parameters.AddWithValue("@Senha", novaSenha);
+cmd.ExecuteNonQuery();
+```
+
+### Delete (Excluir)
+```csharp
+var cmd = new SQLiteCommand(
+    "DELETE FROM Users WHERE Id=@Id", 
+    connection);
+cmd.Parameters.AddWithValue("@Id", id);
+cmd.ExecuteNonQuery();
+```
+
+## 🖥️ Telas do Sistema
+1. **FormInicio**: Tela inicial com opções de login
+2. **FormCRUD**: Menu principal com botões para cada operação
+3. **FormCreate**: Cadastro de novos usuários
+4. **FormRead**: Visualização em grade dos registros
+5. **FormUpdate**: Edição de usuários existentes
+6. **FormDelete**: Exclusão de registros
+
+## ⚠️ Solução de Problemas
+- **Banco não criado**: Verifique permissões na pasta `Database`
+- **Erro de conexão**: Confira se o pacote `System.Data.SQLite` está instalado
+- **Dados não aparecem**: Execute `DatabaseHelper.InicializarBanco()` no `Program.cs`
+
+---
+
+> ✨ **Dica**: Use o [DB Browser for SQLite](https://sqlitebrowser.org/) para visualizar o arquivo `usuarios.db` manualmente.
