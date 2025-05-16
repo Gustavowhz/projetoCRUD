@@ -1,0 +1,13 @@
+# Build do Visual Studio
+bin/
+obj/
+
+# Arquivos de usuário/IDE
+*.user
+*.suo
+*.vs/
+
+# Banco de dados (exceto seu arquivo principal)
+*.db
+!Database/usuarios.db
+*.db-journal
